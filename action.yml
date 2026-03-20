@@ -1,5 +1,5 @@
-name: "Setup LPM"
-description: "Configure the LPM package registry for npm install. Supports OIDC (no secrets) and token-based auth."
+name: "Setup LPM.dev"
+description: "Configure the LPM.dev package registry for npm. Supports OIDC (no secrets) and token auth."
 author: "LPM.dev"
 
 branding:
