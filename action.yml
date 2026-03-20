@@ -1,0 +1,44 @@
+name: "Setup LPM"
+description: "Configure the LPM package registry for npm install. Supports OIDC (no secrets) and token-based auth."
+author: "LPM.dev"
+
+branding:
+  icon: "package"
+  color: "green"
+
+inputs:
+  oidc:
+    description: "Use OIDC for secret-free authentication (requires id-token: write permission)"
+    required: false
+    default: "true"
+  token:
+    description: "LPM auth token (fallback when OIDC is unavailable)"
+    required: false
+    default: ""
+  cli-version:
+    description: "LPM CLI version to install"
+    required: false
+    default: "latest"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install LPM CLI
+      shell: bash
+      run: npm install -g @lpm-registry/cli@${{ inputs.cli-version }}
+
+    - name: Configure LPM registry
+      shell: bash
+      env:
+        LPM_TOKEN: ${{ inputs.token }}
+        INPUT_OIDC: ${{ inputs.oidc }}
+      run: |
+        if [ "$INPUT_OIDC" = "true" ]; then
+          echo "::group::LPM Setup (OIDC)"
+          lpm setup --oidc
+          echo "::endgroup::"
+        else
+          echo "::group::LPM Setup (token)"
+          lpm setup
+          echo "::endgroup::"
+        fi
